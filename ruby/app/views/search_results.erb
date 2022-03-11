@@ -2,9 +2,20 @@
 
 <p>
   <pre><%= ocd_id %></pre>
-  <pre>
-    <%= results %>
-  </pre>
+    <% if results.empty? %>
+      <h3>No results.</h3>
+    <% else %>
+      <% results.each do |result| %>
+        <h3><%= result['description'] %></h3>
+        <% result['district-divisions'].each do |division| %>
+          <em><%= division['election-authority-level'] %></em>
+          <% division['voting-methods'].each do |vote| %>
+            <pre style="white-space: pre-wrap;"><%= vote %></pre>
+          <% end %>
+        <% end %>
+        <hr />
+      <% end %>
+    <% end %>
 </p>
 
 <p>
