@@ -33,17 +33,19 @@ class ApplicationController < Sinatra::Base
     city = params[:city].downcase
       .gsub(/[^a-z ]/i, '') # strip non-alpha
       .gsub(/\s/, '_') # replace spaces with underscores
-    ocd_id = "ocd-division/country:us/state:#{state}/place:#{city}"
+    division_1 = "ocd-division/country:us/state:#{state}"
+    division_2 = "#{division_1}/place:#{city}"
 
-    url = URI.parse('https://api.turbovote.org/elections/upcoming?district-divisions=' + ocd_id)
-    req = Net::HTTP::Post.new(url.to_s, 'Content-Type' => 'application/json')
+    url = URI.parse("https://api.turbovote.org/elections/upcoming?district-divisions=#{division_1},#{division_2}")
+    req = Net::HTTP::Get.new(url.to_s, 'Accept' => 'application/json')
     res = Net::HTTP.start(url.host, url.port, :use_ssl => true) {|http|
       http.request(req)
     }
+    results = JSON.parse(res.body)
 
     erb :search_results, { :locals => {
-                              :ocd_id => ocd_id,
-                              :results => res.body },
+                              :ocd_id => division_2,
+                              :results => results },
                            :layout => true }
   end
 end
