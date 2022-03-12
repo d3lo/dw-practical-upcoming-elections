@@ -3,8 +3,6 @@
 A web application written in Ruby using [Sinatra][sinatra],
 [minitest][minitest], and [erb templates][erb].
 
-# Jason Rogers
-
 ## My process:
 
 I took this in two parts. First, I extended the search route within the application controller to include an API call to Turbovote. This took me about 30-45 minutes to format the URL properly and structure the appropriate call using Net/HTTP.
