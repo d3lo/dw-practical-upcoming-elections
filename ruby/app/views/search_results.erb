@@ -1,22 +1,48 @@
  <h1>Upcoming Elections</h1>
 
-<p>
+<div>
   <pre><%= ocd_id %></pre>
+
     <% if results.empty? %>
       <h3>No results.</h3>
     <% else %>
+
       <% results.each do |result| %>
         <h3><%= result['description'] %></h3>
+
         <% result['district-divisions'].each do |division| %>
           <em><%= division['election-authority-level'] %></em>
+
           <% division['voting-methods'].each do |vote| %>
-            <pre style="white-space: pre-wrap;"><%= vote %></pre>
+            <p><b>Type:</b> <%= vote['type'] %></p>
+
+            <% if vote.key?('instructions') %>
+              <% if vote['instructions'].is_a?(String) %>
+                <p><%= vote['instructions'].gsub(/\n/, '<br />') %></p>
+              <% elsif vote['instructions'].is_a?(Hash) && vote['instructions'].key?('voting-id') %>
+                <p><%= vote['instructions']['voting-id'].gsub(/\n/, '<br />') %></p>
+              <% end %>
+            <% end %>
+
+            <% if vote.key?('excuse-required') && vote['excuse-required'] == true %>
+              <p><b>Excuse Required</b></p>
+            <% end %>
+
+            <% if vote.key?('ballot-request-form-url') %>
+              <p><a href="<%= vote['ballot-request-form-url'] %>">Ballot Request Form</a></p>
+            <% end%>
+
+            <% if vote.key?('ballot-request-deadline-received') %>
+              <p><b>Deadline:</b> <%= Date.parse(vote['ballot-request-deadline-received']).strftime("%B %-d, %Y") %></p>
+            <% end%>
+            <hr />
           <% end %>
+
         <% end %>
-        <hr />
+
       <% end %>
     <% end %>
-</p>
+</div>
 
 <p>
   <a href='/'>Back</a>
